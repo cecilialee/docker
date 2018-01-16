@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  web:
+    build: ./shiny
+    ports:
+      - "3838:3838"
+  db:
+    image: "postgres"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+  api:
+    build: ./opencpu
+    ports:
+      - "80:80"
+      - "8004:8004"

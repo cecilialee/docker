@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   web:
-    build: ./shiny
+    image: "ustcgxd/web"
     ports:
       - "3838:3838"
   db:
@@ -12,7 +12,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
   api:
-    build: ./opencpu
+    image: "ustcgxd/api"
     ports:
       - "80:80"
       - "8004:8004"

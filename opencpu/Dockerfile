@@ -20,5 +20,19 @@ RUN R -e "install.packages(c('RPostgreSQL'), repos = 'http://cran.rstudio.com')"
 
 RUN R -e "install.packages(c('devtools', 'roxygen2', 'stringr', 'tidyr', 'lubridate'), repos = 'http://cran.rstudio.com')"
 
+RUN R -e 'devtools::install_github("rstudio/reticulate")'
+
+RUN R -e 'devtools::install_github("rstudio/keras")'
+
+RUN R -e "install.packages(c('tidyquant'), repos = 'http://cran.rstudio.com')"
+
+RUN apt-get install python-pip python-virtualenv -y
+
+USER opencpu
+
+RUN R -e 'library(keras);install_keras()'
+
+USER root
+
 CMD /usr/lib/rstudio-server/bin/rserver && apachectl -DFOREGROUND
 

@@ -16,6 +16,9 @@ RUN R -e "install.packages(c('RPostgreSQL'), repos = 'http://cran.rstudio.com')"
 
 RUN R -e "install.packages(c('devtools', 'roxygen2', 'stringr', 'tidyr', 'lubridate'), repos = 'http://cran.rstudio.com')"
 
+RUN R -e "install.packages(c('shinyBS', 'shinyjs', 'shinyWidgets'), repos = 'http://cran.rstudio.com')"
+
+
 EXPOSE 3838
 
 CMD ["/usr/bin/shiny-server.sh"]

@@ -18,6 +18,9 @@ RUN R -e "install.packages(c('devtools', 'roxygen2', 'stringr', 'tidyr', 'lubrid
 
 RUN R -e "install.packages(c('shinyBS', 'shinyjs', 'shinyWidgets'), repos = 'http://cran.rstudio.com')"
 
+# Mongo
+RUN apt-get update && apt-get install -y libssl-dev libsasl2-dev
+RUN R -e "install.packages(c('mongolite'), repos = 'http://cran.rstudio.com')"
 
 EXPOSE 3838
 

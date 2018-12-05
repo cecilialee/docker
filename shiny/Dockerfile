@@ -22,6 +22,8 @@ RUN R -e "install.packages(c('shinyBS', 'shinyjs', 'shinyWidgets'), repos = 'htt
 RUN apt-get update && apt-get install -y libssl-dev libsasl2-dev
 RUN R -e "install.packages(c('mongolite'), repos = 'http://cran.rstudio.com')"
 
+RUN R -e "install.packages(c('tidyverse'), repos = 'http://cran.rstudio.com')"
+
 EXPOSE 3838
 
 CMD ["/usr/bin/shiny-server.sh"]

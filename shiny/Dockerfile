@@ -3,27 +3,37 @@ FROM rocker/shiny
 RUN apt-get update && apt-get install nano
 
 # Required for some R packages
-RUN apt-get update && apt-get install libpq-dev -y
-
-RUN apt-get update && apt-get install git -y
-
-RUN apt-get update && apt-get install libssl-dev -y
+RUN apt-get update && apt-get install -y libpq-dev git libssl-dev nano wget libxml2 libcurl4-openssl-dev
 
 # Install R Packages
-RUN R -e "install.packages(c('shiny', 'dplyr', 'DT', 'digest', 'shinydashboard'), repos = 'http://cran.rstudio.com')"
+RUN R -e "install.packages(c('shiny', 'shinyjs', 'DT', 'shinyalert', 'shinydashboard', 'shinyWidgets', 'shinyBS', 'highcharter'), repos = 'http://cran.rstudio.com')"
 
-RUN R -e "install.packages(c('RPostgreSQL'), repos = 'http://cran.rstudio.com')"
+RUN R -e "install.packages(c('RPostgreSQL', 'digest'), repos = 'http://cran.rstudio.com')"
 
-RUN R -e "install.packages(c('devtools', 'roxygen2', 'stringr', 'tidyr', 'lubridate'), repos = 'http://cran.rstudio.com')"
+RUN R -e "install.packages(c('devtools', 'roxygen2', 'tidyverse', 'lubridate', 'readxl', 'rmarkdown'), repos = 'http://cran.rstudio.com')"
 
-RUN R -e "install.packages(c('shinyBS', 'shinyjs', 'shinyWidgets'), repos = 'http://cran.rstudio.com')"
+RUN R -e "devtools::install_github('massmutual/dcr')"
 
-# Mongo
-RUN apt-get update && apt-get install -y libssl-dev libsasl2-dev
-RUN R -e "install.packages(c('mongolite'), repos = 'http://cran.rstudio.com')"
+# Copy utility files
+COPY init.R /
 
-RUN R -e "install.packages(c('tidyverse'), repos = 'http://cran.rstudio.com')"
+# Clear app folder
+RUN cd /srv/shiny-server && rm -r *
+
+WORKDIR /srv/shiny-server
+
+RUN mkdir /root/.ssh
 
 EXPOSE 3838
 
-CMD ["/usr/bin/shiny-server.sh"]
+RUN echo '#!/bin/bash' > /init.sh
+RUN echo '\ncp /files/id_rsa /root/.ssh/id_rsa' >> /init.sh
+RUN echo 'ssh -o "StrictHostKeyChecking=no" git@bitbucket.org' >> /init.sh
+RUN echo 'ssh -o "StrictHostKeyChecking=no" git@github.com' >> /init.sh
+RUN echo '\nchmod 600 /root/.ssh/id_rsa' >> /init.sh
+RUN echo '\nRscript /init.R /files/repos.yml' >> /init.sh
+RUN echo '\n/usr/bin/shiny-server.sh' >> /init.sh
+
+RUN chmod 777 /init.sh
+
+CMD ["/init.sh"]

@@ -7,8 +7,10 @@ repos <- yaml::yaml.load_file(rfile)
 for (app in names(repos)) {
   config <- repos[[app]]
   # Clone repo
+  branch <- config$branch
+  if (is.null(branch)) branch <- "master"
   clone_cmd <- sprintf(
-    "git clone %s %s", config$src, app 
+    "git clone -b %s %s %s", branch, config$src, app 
   )
   system(clone_cmd)
   # Create .Renviron for the app

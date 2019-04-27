@@ -2,15 +2,23 @@ version: '3.1'
 services:
   mongo:
     image: mongo
+    restart: always
+    volumes:
+      - ./mongo_data:/data/db
     ports:
       - "27017:27017"
   web:
-    image: "ustcgxd/web"
+    build: ./
+    restart: always
+    volumes:
+      - ./apps:/srv/shiny-server
     ports:
       - "3838:3838"
   db:
     image: "postgres"
     restart: always
+    volumes:
+      - ./psql_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
